@@ -30,7 +30,7 @@
 </div>
 <script>
     (function fetchData(){
-        fetch('http://localhost:4000/calc/getData/60f40f5483bd1c11de26400d', {
+        fetch('https://calc-app-14.herokuapp.com/calc/getData/60f40f5483bd1c11de26400d', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -64,7 +64,7 @@
     }
 
     function saveToDataBase(data){
-        fetch('http://localhost:4000/calc/saveData', {
+        fetch('https://calc-app-14.herokuapp.com/calc/saveData', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
