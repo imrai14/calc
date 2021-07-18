@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Calculator APP</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="jumbotron text-center">
+    <h1>Calculator App</h1>
+</div>
+<div class="container">
+    <form>
+        <div class="form-group">
+          <label for="fInput">First Input</label>
+          <input type="text" class="form-control" onkeypress="return isNumber(event)" id="fInput" oncopy="return false" onpaste="return false" autocomplete="off" placeholder="First Input">
+        </div>
+        <div class="form-group">
+            <label for="sInput">Second Input</label>
+            <input type="text" class="form-control" onkeypress="return isNumber(event)" id="sInput" oncopy="return false" onpaste="return false" autocomplete="off" placeholder="Second Input">
+          </div>
+
+        <button type="button" onclick="sum()" class="btn btn-primary">Submit</button>
+      </form>
+</div>
+<br>
+<div class="jumbotron text-center">
+    <h2>Result: <span id="mul"></span></h2>
+</div>
+<script>
+    (function fetchData(){
+        fetch('http://localhost:4000/calc/getData/60f40f5483bd1c11de26400d', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('fInput').value = data.firstInput
+            document.getElementById('sInput').value = data.secondInput;
+            document.getElementById('mul').innerHTML = data.result;
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
+    })();
+
+    function sum(){
+        let val1 = document.getElementById('fInput').value;
+        let val2 = document.getElementById('sInput').value;
+        if(val1.length > 0 && val2.length > 0){
+            let sum = Number(val1) * Number(val2);
+            document.getElementById('mul').innerHTML = sum;
+            saveToDataBase({
+                _id: '60f40f5483bd1c11de26400d',
+                firstInput: val1,
+                secondInput: val2,
+                result : String(sum)
+            })
+        }
+    }
+
+    function saveToDataBase(data){
+        fetch('http://localhost:4000/calc/saveData', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+
+    function isNumber(e) {
+        const pattern = /^[0-9]$/;
+
+        return pattern.test(e.key)
+    }
+</script>
+</body>
+</html>
